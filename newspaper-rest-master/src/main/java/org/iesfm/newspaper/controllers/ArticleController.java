@@ -26,12 +26,5 @@ public class ArticleController {
                             .map(article -> ArticleDto.toDto(article))
                             .collect(Collectors.toList()));
     }
-
-    @GetMapping
     
-    @PostMapping
-
-    @PutMapping
-
-    @DeleteMapping
 }
