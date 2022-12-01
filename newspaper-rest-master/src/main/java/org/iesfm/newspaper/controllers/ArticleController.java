@@ -52,4 +52,28 @@ public class ArticleController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
+
+    @PutMapping(path = "/articles/{articleId}")
+    public ResponseEntity<Void> updateArticle(
+            @PathVariable("articleId") int id,
+            @Valid @RequestBody ArticleDto article
+    ){
+        if (articleService.updateArticle(id, ArticleDto.toEntity(article))){
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping(path = "/articles/{articleId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable("articleId") int id
+    ){
+        if (articleService.deleteArticle(id)){
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
