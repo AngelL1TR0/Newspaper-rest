@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ArticleService {
+public class SectionService {
 
     @Autowired
     private ArticleDAO articleDAO;
@@ -21,18 +21,23 @@ public class ArticleService {
     public List<Article> articleList(int idSection, String author){
         return articleDAO.listSectionArticles(idSection, author);
     }
+
     public List<Article> list(){
         return articleDAO.list();
     }
+
     public Article getArticle(int id){
         return articleDAO.getArticle(id);
     }
+
     public boolean addArticle(Article article){
         return articleDAO.add(article);
     }
+
     public boolean deleteArticle(int id){
         return articleDAO.delete(id);
     }
+
     public boolean updateArticle(int id, Article article){
         return articleDAO.update(id, article);
     }

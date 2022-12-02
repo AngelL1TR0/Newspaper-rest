@@ -2,12 +2,13 @@ package org.iesfm.newspaper.dao.inmemory;
 
 import org.iesfm.newspaper.dao.SectionDAO;
 import org.iesfm.newspaper.entity.Section;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+@Component
 public class InMemorySectionDAO implements SectionDAO {
     private Map<Integer, Section> sections = new HashMap<>();
 

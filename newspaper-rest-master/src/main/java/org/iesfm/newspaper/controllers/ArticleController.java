@@ -2,7 +2,7 @@ package org.iesfm.newspaper.controllers;
 
 import org.iesfm.newspaper.controllers.dto.ArticleDto;
 import org.iesfm.newspaper.entity.Article;
-import org.iesfm.newspaper.service.ArticleService;
+import org.iesfm.newspaper.service.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ArticleController {
 
     @Autowired
-    private ArticleService articleService;
+    private SectionService sectionService;
 
     @GetMapping(path ="/articles")
     public ResponseEntity<List<ArticleDto>> list(
@@ -24,17 +24,17 @@ public class ArticleController {
             @RequestParam(value = "author", required = false) String author
     ) {
             return ResponseEntity.ok(
-                    articleService.articleList(id, author)
+                    sectionService.articleList(id, author)
                             .stream()
                             .map(article -> ArticleDto.toDto(article))
                             .collect(Collectors.toList()));
     }
 
-    @GetMapping(path = "/articles/{articleId}")
+    @GetMapping(path = "/sections/{sectionId}/articles")
     public ResponseEntity<ArticleDto> getArticle(
             @PathVariable("articleId") int articleId
     ){
-        Article article = articleService.getArticle(articleId);
+        Article article = sectionService.getArticle(articleId);
         if (article != null){
             return ResponseEntity.ok(ArticleDto.toDto(article));
         } else {
@@ -42,34 +42,34 @@ public class ArticleController {
         }
     }
 
-    @PostMapping(path = "/articles")
+    @PostMapping(path = "/sections/{sectionId}/articles")
     public ResponseEntity<Void> add(
             @Valid @RequestBody ArticleDto articleDto
     ){
-        if (articleService.addArticle(ArticleDto.toEntity(articleDto))){
+        if (sectionService.addArticle(ArticleDto.toEntity(articleDto))){
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
-    @PutMapping(path = "/articles/{articleId}")
+    @PutMapping(path = "/sections/{sectionId}/articles/{id}")
     public ResponseEntity<Void> updateArticle(
             @PathVariable("articleId") int id,
             @Valid @RequestBody ArticleDto article
     ){
-        if (articleService.updateArticle(id, ArticleDto.toEntity(article))){
+        if (sectionService.updateArticle(id, ArticleDto.toEntity(article))){
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping(path = "/articles/{articleId}")
+    @DeleteMapping(path = "/sections/{sectionId}/articles/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable("articleId") int id
     ){
-        if (articleService.deleteArticle(id)){
+        if (sectionService.deleteArticle(id)){
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();

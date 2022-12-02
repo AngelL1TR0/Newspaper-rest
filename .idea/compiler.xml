@@ -18,7 +18,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="newspaper-rest" target="17" />
+      <module name="newspaper-rest" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
