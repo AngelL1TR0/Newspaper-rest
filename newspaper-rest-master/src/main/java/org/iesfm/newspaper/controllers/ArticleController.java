@@ -1,8 +1,12 @@
 package org.iesfm.newspaper.controllers;
 
 import org.iesfm.newspaper.controllers.dto.ArticleDto;
+import org.iesfm.newspaper.controllers.dto.ArticleSectionDto;
 import org.iesfm.newspaper.entity.Article;
 import org.iesfm.newspaper.service.SectionService;
+import org.iesfm.newspaper.service.exceptions.ArticleExistException;
+import org.iesfm.newspaper.service.exceptions.ArticleNotFoundExceptions;
+import org.iesfm.newspaper.service.exceptions.SectionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,24 +35,40 @@ public class ArticleController {
     }
 
     @GetMapping(path = "/sections/{sectionId}/articles")
-    public ResponseEntity<ArticleDto> getArticle(
-            @PathVariable("articleId") int articleId
+    public ResponseEntity<ArticleSectionDto> getSectionArticles(
+           @RequestParam("sectionId") int id,
+           @Valid @RequestBody ArticleSectionDto articleSectionDto
     ){
-        Article article = sectionService.getArticle(articleId);
-        if (article != null){
-            return ResponseEntity.ok(ArticleDto.toDto(article));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try{
+            return ResponseEntity.ok(
+                    sectionService.getArticle(id)
+                            .stream()
+                            .map(ArticleSectionDto::toDto)
+                            .collect(Collectors.toList())
+            );
+        } catch (ArticleNotFoundExceptions e){
+            return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping(path = "/sections/{sectionId}/articles/{author}")
+    public ResponseEntity<ArticleSectionDto> getArticleByAuthor(
+
+            @PathVariable("author") String author
+    ){
+
     }
 
     @PostMapping(path = "/sections/{sectionId}/articles")
     public ResponseEntity<Void> add(
             @Valid @RequestBody ArticleDto articleDto
     ){
-        if (sectionService.addArticle(ArticleDto.toEntity(articleDto))){
+        try {
+            sectionService.addArticle(ArticleDto.toEntity(articleDto));
             return ResponseEntity.ok().build();
-        } else {
+        } catch (SectionNotFoundException e){
+            return ResponseEntity.notFound().build();
+        } catch (ArticleExistException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
@@ -58,9 +78,10 @@ public class ArticleController {
             @PathVariable("articleId") int id,
             @Valid @RequestBody ArticleDto article
     ){
-        if (sectionService.updateArticle(id, ArticleDto.toEntity(article))){
+        try {
+            sectionService.updateArticle(id, ArticleDto.toEntity(article));
             return ResponseEntity.ok().build();
-        } else {
+        } catch (SectionNotFoundException | ArticleNotFoundExceptions e){
             return ResponseEntity.notFound().build();
         }
     }
@@ -69,9 +90,10 @@ public class ArticleController {
     public ResponseEntity<Void> delete(
             @PathVariable("articleId") int id
     ){
-        if (sectionService.deleteArticle(id)){
+        try {
+            sectionService.deleteArticle(id);
             return ResponseEntity.ok().build();
-        } else {
+        } catch (SectionNotFoundException | ArticleNotFoundExceptions e){
             return ResponseEntity.notFound().build();
         }
     }

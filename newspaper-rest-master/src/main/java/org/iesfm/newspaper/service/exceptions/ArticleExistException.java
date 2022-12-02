@@ -1,10 +1,11 @@
 package org.iesfm.newspaper.service.exceptions;
 
-public class ArticleNotFoundExceptions extends Exception {
+public class ArticleExistException extends Exception{
+
     private final int id;
     private final String author;
 
-    public ArticleNotFoundExceptions(int id, String author) {
+    public ArticleExistException(int id, String author) {
         this.id = id;
         this.author = author;
     }
