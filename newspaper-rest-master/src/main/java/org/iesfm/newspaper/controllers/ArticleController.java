@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @RestController
 public class ArticleController {
 
@@ -23,25 +22,23 @@ public class ArticleController {
     private SectionService sectionService;
 
     @GetMapping(path ="/articles")
-    public ResponseEntity<List<ArticleDto>> list(
-            @RequestParam(required = true, defaultValue = "1") int id,
-            @RequestParam(value = "author", required = false) String author
-    ) {
+    public ResponseEntity<List<ArticleDto>> list(){
             return ResponseEntity.ok(
-                    sectionService.articleList(id, author)
+                    sectionService.list()
                             .stream()
-                            .map(article -> ArticleDto.toDto(article))
-                            .collect(Collectors.toList()));
+                            .map(ArticleDto::toDto)
+                            .collect(Collectors.toList())
+            );
     }
 
     @GetMapping(path = "/sections/{sectionId}/articles")
-    public ResponseEntity<ArticleSectionDto> getSectionArticles(
-           @RequestParam("sectionId") int id,
-           @Valid @RequestBody ArticleSectionDto articleSectionDto
+    public ResponseEntity<List<ArticleSectionDto>> getSectionArticles(
+          @PathVariable("sectionId") int id,
+          @PathVariable("author") String author
     ){
         try{
             return ResponseEntity.ok(
-                    sectionService.getArticle(id)
+                    sectionService.articleList(id, author)
                             .stream()
                             .map(ArticleSectionDto::toDto)
                             .collect(Collectors.toList())
@@ -53,10 +50,18 @@ public class ArticleController {
 
     @GetMapping(path = "/sections/{sectionId}/articles/{author}")
     public ResponseEntity<ArticleSectionDto> getArticleByAuthor(
-
+            @PathVariable("sectionId") int id,
             @PathVariable("author") String author
     ){
-
+        try {
+            return ResponseEntity.ok(
+                    ArticleSectionDto.toDto(
+                            (Article) sectionService.articleList(id, author)
+                    )
+            );
+        } catch (SectionNotFoundException | ArticleNotFoundExceptions e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping(path = "/sections/{sectionId}/articles")

@@ -1,6 +1,6 @@
 package org.iesfm.newspaper.service.exceptions;
 
-public class SectionNotFoundException {
+public class SectionNotFoundException extends Exception {
 
     private final int sectionId;
 
