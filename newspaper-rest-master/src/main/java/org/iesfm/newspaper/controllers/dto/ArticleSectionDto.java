@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import org.iesfm.newspaper.entity.Article;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArticleSectionDto {
-    @NotBlank
+    @NotNull
     @Positive
     private int id;
     @NotBlank

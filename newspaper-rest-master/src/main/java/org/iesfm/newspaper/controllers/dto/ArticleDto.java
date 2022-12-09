@@ -14,7 +14,7 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 public class ArticleDto {
 
-    @NotBlank
+    @NotNull
     @Positive
     private int id;
     @NotBlank
